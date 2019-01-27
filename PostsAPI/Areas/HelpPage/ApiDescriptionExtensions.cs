@@ -3,7 +3,7 @@ using System.Text;
 using System.Web;
 using System.Web.Http.Description;
 
-namespace TobiasGlazebrook.Areas.HelpPage
+namespace PostsAPI.Areas.HelpPage
 {
     public static class ApiDescriptionExtensions
     {

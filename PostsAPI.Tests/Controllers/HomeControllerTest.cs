@@ -1,9 +1,9 @@
 ﻿using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TobiasGlazebrook;
-using TobiasGlazebrook.Controllers;
+using PostsAPI;
+using PostsAPI.Controllers;
 
-namespace TobiasGlazebrook.Tests.Controllers
+namespace PostsAPI.Tests.Controllers
 {
     [TestClass]
     public class HomeControllerTest

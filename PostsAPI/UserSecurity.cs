@@ -1,4 +1,4 @@
-﻿namespace TobiasGlazebrook
+﻿namespace PostsAPI
 {
     using System;
     using System.Linq;

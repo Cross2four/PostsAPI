@@ -4,11 +4,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
+using System.Web.Http.Routing;
+using DataAccess.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TobiasGlazebrook;
-using TobiasGlazebrook.Controllers;
 
-namespace TobiasGlazebrook.Tests.Controllers
+using PostsAPI.Controllers;
+
+namespace PostsAPI.Tests.Controllers
 {
     [TestClass]
     public class PostsControllerTest
@@ -52,6 +54,34 @@ namespace TobiasGlazebrook.Tests.Controllers
             controller.Post("value");
 
             // Assert
+        }
+
+        [TestMethod]
+        public void PostSetsLocationHeader()
+        {
+            // Arrange
+            PostsController controller = new PostsController();
+
+            controller.Request = new HttpRequestMessage
+            {
+                RequestUri = new Uri("http://localhost/api/products")
+            };
+            controller.Configuration = new HttpConfiguration();
+            controller.Configuration.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional });
+
+            controller.RequestContext.RouteData = new HttpRouteData(
+                route: new HttpRoute(),
+                values: new HttpRouteValueDictionary { { "controller", "posts" } });
+
+            // Act
+            Post post = new Post() { Id = 42, Body = "Product1" };
+            var response = controller.Post(post);
+
+            // Assert
+            Assert.AreEqual("http://localhost/api/products/42", response.Headers.Location.AbsoluteUri);
         }
 
         [TestMethod]

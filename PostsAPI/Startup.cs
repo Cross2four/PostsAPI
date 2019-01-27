@@ -4,9 +4,9 @@ using System.Linq;
 using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof(TobiasGlazebrook.Startup))]
+[assembly: OwinStartup(typeof(PostsAPI.Startup))]
 
-namespace TobiasGlazebrook
+namespace PostsAPI
 {
     public partial class Startup
     {

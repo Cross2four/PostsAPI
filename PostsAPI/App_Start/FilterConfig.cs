@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace TobiasGlazebrook
+namespace PostsAPI
 {
     public class FilterConfig
     {

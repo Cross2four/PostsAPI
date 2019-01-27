@@ -10,7 +10,7 @@ using System.Web;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
-namespace TobiasGlazebrook
+namespace PostsAPI
 {
     public class AuthenticationAttribute : AuthorizationFilterAttribute
     {

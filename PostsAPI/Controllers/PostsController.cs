@@ -7,7 +7,7 @@ using System.Web.Http;
 using DataAccess;
 using DataAccess.Models;
 
-namespace TobiasGlazebrook.Controllers
+namespace PostsAPI.Controllers
 {
     // [Authorize]
     public class PostsController : ApiController

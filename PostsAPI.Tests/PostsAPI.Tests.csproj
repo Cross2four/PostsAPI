@@ -103,6 +103,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+      <Project>{29D6FD20-CA0A-49C7-B27D-FA817B8782A9}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PostsAPI\PostsAPI.csproj">
       <Project>{804B0BEB-D03E-4EBF-8B63-400880B1BCCA}</Project>
       <Name>PostsAPI</Name>

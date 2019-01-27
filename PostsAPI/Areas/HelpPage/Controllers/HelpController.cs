@@ -1,10 +1,10 @@
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
-using TobiasGlazebrook.Areas.HelpPage.ModelDescriptions;
-using TobiasGlazebrook.Areas.HelpPage.Models;
+using PostsAPI.Areas.HelpPage.ModelDescriptions;
+using PostsAPI.Areas.HelpPage.Models;
 
-namespace TobiasGlazebrook.Areas.HelpPage.Controllers
+namespace PostsAPI.Areas.HelpPage.Controllers
 {
     /// <summary>
     /// The controller that will handle requests for the help page.

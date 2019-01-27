@@ -1,4 +1,4 @@
-namespace TobiasGlazebrook.Areas.HelpPage.ModelDescriptions
+namespace PostsAPI.Areas.HelpPage.ModelDescriptions
 {
     public class DictionaryModelDescription : KeyValuePairModelDescription
     {

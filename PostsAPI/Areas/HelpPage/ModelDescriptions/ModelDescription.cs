@@ -1,6 +1,6 @@
 using System;
 
-namespace TobiasGlazebrook.Areas.HelpPage.ModelDescriptions
+namespace PostsAPI.Areas.HelpPage.ModelDescriptions
 {
     /// <summary>
     /// Describes a type model.

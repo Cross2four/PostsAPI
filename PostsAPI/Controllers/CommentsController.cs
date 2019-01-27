@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace TobiasGlazebrook.Controllers
+namespace PostsAPI.Controllers
 {
     public class CommentsController : ApiController
     {

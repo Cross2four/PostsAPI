@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace TobiasGlazebrook
+namespace PostsAPI
 {
     public class BundleConfig
     {

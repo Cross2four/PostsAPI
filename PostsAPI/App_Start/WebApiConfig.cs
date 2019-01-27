@@ -2,7 +2,7 @@
 using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
 
-namespace TobiasGlazebrook
+namespace PostsAPI
 {
     public static class WebApiConfig
     {
