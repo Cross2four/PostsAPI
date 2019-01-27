@@ -103,9 +103,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TobiasGlazebrook\TobiasGlazebrook.csproj">
+    <ProjectReference Include="..\TobiasGlazebrook\PostsAPI.csproj">
       <Project>{804B0BEB-D03E-4EBF-8B63-400880B1BCCA}</Project>
-      <Name>TobiasGlazebrook</Name>
+      <Name>PostsAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
