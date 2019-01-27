@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TobiasGlazebrook", "TobiasG
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TobiasGlazebrook.Tests", "TobiasGlazebrook.Tests\TobiasGlazebrook.Tests.csproj", "{BC686793-850A-437E-ADFD-5A38B50F5891}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{29D6FD20-CA0A-49C7-B27D-FA817B8782A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PasswordHasher", "PasswordHasher\PasswordHasher.csproj", "{020E5642-034F-45DB-A91B-7961271B4D9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{BC686793-850A-437E-ADFD-5A38B50F5891}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC686793-850A-437E-ADFD-5A38B50F5891}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC686793-850A-437E-ADFD-5A38B50F5891}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29D6FD20-CA0A-49C7-B27D-FA817B8782A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29D6FD20-CA0A-49C7-B27D-FA817B8782A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29D6FD20-CA0A-49C7-B27D-FA817B8782A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29D6FD20-CA0A-49C7-B27D-FA817B8782A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{020E5642-034F-45DB-A91B-7961271B4D9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{020E5642-034F-45DB-A91B-7961271B4D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{020E5642-034F-45DB-A91B-7961271B4D9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{020E5642-034F-45DB-A91B-7961271B4D9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
