@@ -47,7 +47,37 @@ namespace PostsAPI.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetById()
+        public async System.Threading.Tasks.Task GetByIdAsync()
+        {
+            // Arrange
+            var controller = new PostsController();
+            controller.Request = new HttpRequestMessage();
+
+            controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", "user1", "password1"))));
+
+            controller.Configuration = new HttpConfiguration();
+
+            // Act
+            using (DataModel entities = new DataModel())
+            {
+                Post lastPost = entities.Posts.ToList().Last();
+                var response = controller.Get(lastPost.Id);
+
+                // Assert
+                PostReturned post = new PostReturned();
+                Assert.IsTrue(response.TryGetContentValue<PostReturned>(out post));
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+                var json = Json.Decode(responseBody);
+
+                Assert.AreEqual(lastPost.Id, json.Id);
+            }
+        }
+
+        [TestMethod]
+        public void GetById_DoesntExist()
         {
             // Arrange
             var controller = new PostsController();
@@ -64,8 +94,7 @@ namespace PostsAPI.Tests.Controllers
 
             // Assert
             PostReturned post = new PostReturned { Id = 10 };
-            Assert.IsTrue(response.TryGetContentValue<PostReturned>(out post));
-            Assert.AreEqual(10, post.Id);
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [TestMethod]

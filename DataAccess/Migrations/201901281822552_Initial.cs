@@ -10,14 +10,13 @@ namespace DataAccess.Migrations
             CreateTable(
                 "dbo.Comments",
                 c => new
-                {
-                    Id = c.Int(nullable: false, identity: true),
-                    Body = c.String(),
-                    CreatedAt = c.DateTime(nullable: false),
-                    Post_Id = c.Int(),
-                    User_Id = c.Int(),
-                    User_Id1 = c.Int(),
-                })
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Body = c.String(),
+                        CreatedAt = c.DateTime(nullable: false),
+                        Post_Id = c.Int(),
+                        User_Id = c.Int(),
+                    })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Posts", t => t.Post_Id)
                 .ForeignKey("dbo.Users", t => t.User_Id)
@@ -32,7 +31,6 @@ namespace DataAccess.Migrations
                         Body = c.String(),
                         CreatedAt = c.DateTime(nullable: false),
                         User_Id = c.Int(),
-                        User_Id1 = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Users", t => t.User_Id)

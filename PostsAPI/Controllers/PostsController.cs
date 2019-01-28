@@ -36,13 +36,14 @@ namespace PostsAPI.Controllers
         // GET api/values/5
         public HttpResponseMessage Get(int id)
         {
+
             using (DataModel entities = new DataModel())
             {
-                var post = (PostReturned)entities.Posts.Include("User").Include("Comments").FirstOrDefault(e => e.Id.Equals(id));
+                var post = entities.Posts.Include("User").Include("Comments").FirstOrDefault(e => e.Id.Equals(id));
 
                 if (post != null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, post);
+                    return Request.CreateResponse(HttpStatusCode.OK, (PostReturned)post);
                 } else
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"Post with ID: {id.ToString()} was not found");
