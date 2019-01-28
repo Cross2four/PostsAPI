@@ -53,6 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataModel.cs" />
+    <Compile Include="Migrations\201901280819046_Initial.cs" />
+    <Compile Include="Migrations\201901280819046_Initial.Designer.cs">
+      <DependentUpon>201901280819046_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Post.cs" />
@@ -69,10 +73,19 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationPrincipal\ApplicationPrincipal.csproj">
+      <Project>{4ddd9d4d-ce5c-4a3a-9023-7a0d73974648}</Project>
+      <Name>ApplicationPrincipal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PasswordHasher\PasswordHasher.csproj">
       <Project>{020e5642-034f-45db-a91b-7961271b4d9c}</Project>
       <Name>PasswordHasher</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201901280819046_Initial.resx">
+      <DependentUpon>201901280819046_Initial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

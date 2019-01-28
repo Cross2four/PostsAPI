@@ -2,6 +2,8 @@
 {
     using System;
     using System.Linq;
+    using System.Security.Principal;
+    using System.Threading;
     using DataAccess;
     using PasswordHasher;
 
@@ -9,7 +11,7 @@
     {
         public static Boolean Login(string username, string password)
         {
-            using(DataModel entities = new DataModel())
+            using (DataModel entities = new DataModel())
             {
                 var user = entities.Users.FirstOrDefault(u => u.UserName.Equals(username));
 

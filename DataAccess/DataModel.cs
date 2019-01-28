@@ -21,5 +21,19 @@ namespace DataAccess
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Comment>()
+                .HasOptional<User>(c => c.User)
+                .WithOptionalDependent()
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Post>()
+                .HasOptional<User>(p => p.User)
+                .WithOptionalDependent()
+                .WillCascadeOnDelete(false);
+        }
+
     }
 }

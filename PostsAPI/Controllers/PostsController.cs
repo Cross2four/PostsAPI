@@ -38,7 +38,7 @@ namespace PostsAPI.Controllers
         {
             using (DataModel entities = new DataModel())
             {
-                var post = entities.Posts.Include("User").Include("Comments").FirstOrDefault(e => e.Id.Equals(id));
+                var post = (PostReturned)entities.Posts.Include("User").Include("Comments").FirstOrDefault(e => e.Id.Equals(id));
 
                 if (post != null)
                 {
@@ -75,7 +75,7 @@ namespace PostsAPI.Controllers
                     entities.SaveChanges();
 
                     var message = Request.CreateResponse(HttpStatusCode.Created, (PostReturned)postEntity);
-                    message.Headers.Location = new Uri(Request.RequestUri + postEntity.Id.ToString());
+                    message.Headers.Location = new Uri(Request.RequestUri + "/" + postEntity.Id.ToString());
 
                     return message;
                 }

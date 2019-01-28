@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Web.Helpers;
 using System.Web.Http;
+using System.Web.Http.Controllers;
 using System.Web.Http.Routing;
 using DataAccess.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PostsAPI.Controllers;
+using DataAccess;
+using System.Linq;
 
 namespace PostsAPI.Tests.Controllers
 {
@@ -36,7 +38,12 @@ namespace PostsAPI.Tests.Controllers
             // Assert
             List<PostReturned> posts;
             Assert.IsTrue(response.TryGetContentValue<List<PostReturned>>(out posts));
-            Assert.AreEqual(8, posts.Count);
+
+            using (DataModel entities = new DataModel())
+            {
+                int postsCount = entities.Posts.Count();
+                Assert.AreEqual(postsCount, posts.Count);
+            }
         }
 
         [TestMethod]
@@ -66,14 +73,14 @@ namespace PostsAPI.Tests.Controllers
         {
             // Arrange
             PostsController controller = new PostsController();
-            controller.Request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post
-            };
-
+            controller.Request = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/posts");
+            
             controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
                 "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
                     string.Format("{0}:{1}", "user1", "password1"))));
+
+            var filter = new AuthenticationAttribute();
+            filter.OnAuthorization(controller.ActionContext);
 
             controller.Configuration = new HttpConfiguration();
 
@@ -85,7 +92,7 @@ namespace PostsAPI.Tests.Controllers
             var json = Json.Decode(responseBody);
 
             // Assert
-            Assert.AreEqual(json, post);
+            Assert.AreEqual(json.Body, post.Body);
         }
 
         [TestMethod]
@@ -96,13 +103,16 @@ namespace PostsAPI.Tests.Controllers
 
             controller.Request = new HttpRequestMessage
             {
-                RequestUri = new Uri("http://localhost/api/products"),
+                RequestUri = new Uri("http://localhost/api/posts"),
                 Method = HttpMethod.Post
             };
 
             controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
                 "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
                     string.Format("{0}:{1}", "user1", "password1"))));
+
+            var filter = new AuthenticationAttribute();
+            filter.OnAuthorization(controller.ActionContext);
 
             controller.Configuration = new HttpConfiguration();
             controller.Configuration.Routes.MapHttpRoute(
@@ -122,7 +132,7 @@ namespace PostsAPI.Tests.Controllers
             var json = Json.Decode(responseBody);
 
             // Assert
-            Assert.AreEqual("http://localhost/api/products/", response.Headers.Location.AbsoluteUri);
+            Assert.AreEqual("http://localhost/api/posts/" + json.Id, response.Headers.Location.AbsoluteUri);
         }
 
         [TestMethod]
@@ -139,17 +149,30 @@ namespace PostsAPI.Tests.Controllers
                 "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
                     string.Format("{0}:{1}", "user1", "password1"))));
 
+            var filter = new AuthenticationAttribute();
+            filter.OnAuthorization(controller.ActionContext);
+
             controller.Configuration = new HttpConfiguration();
 
             // Act
-            PostRecieved post = new PostRecieved() { Body = "Product1" };
-            var response = controller.Put(3, post);
+            using (DataModel entities = new DataModel())
+            {
+                var posts = entities.Posts.ToList();
 
-            string responseBody = await response.Content.ReadAsStringAsync();
-            var json = Json.Decode(responseBody);
+                PostRecieved post = new PostRecieved() { Body = "Product1" };
+                var response = controller.Put(posts.Last().Id, post);
 
-            // Assert
-            Assert.AreEqual(json, post);
+                // Assert
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+                var json = Json.Decode(responseBody);
+
+                // Assert
+                Assert.AreEqual(json.Body, post.Body);
+            }
         }
 
         [TestMethod]
@@ -165,15 +188,21 @@ namespace PostsAPI.Tests.Controllers
                 "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
                     string.Format("{0}:{1}", "user1", "password1"))));
 
+            var filter = new AuthenticationAttribute();
+            filter.OnAuthorization(controller.ActionContext);
 
             controller.Configuration = new HttpConfiguration();
 
             // Act
 
-            var response = controller.Delete(3);
-            
-            // Assert
-            Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
+            using (DataModel entities = new DataModel())
+            {
+                var posts = entities.Posts.ToList();
+                var response = controller.Delete(posts.Last().Id);
+
+                // Assert
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            }
         }
 
         [TestMethod]
@@ -189,15 +218,16 @@ namespace PostsAPI.Tests.Controllers
                 "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
                     string.Format("{0}:{1}", "user1", "password1"))));
 
+            var filter = new AuthenticationAttribute();
+            filter.OnAuthorization(controller.ActionContext);
 
             controller.Configuration = new HttpConfiguration();
 
             // Act
-
-            var response = controller.Delete(100);
+            var response = controller.Delete(1000);
 
             // Assert
-            Assert.AreEqual(response.StatusCode, HttpStatusCode.NotFound);
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }

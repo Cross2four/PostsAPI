@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Principal;
-using System.Text;
-using System.Threading;
-using System.Web;
-using System.Web.Http.Controllers;
-using System.Web.Http.Filters;
-
-namespace PostsAPI
+﻿namespace PostsAPI
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Security.Principal;
+    using System.Text;
+    using System.Threading;
+    using System.Web;
+    using System.Web.Http.Controllers;
+    using System.Web.Http.Filters;
+    using ApplicationPrincipal;
+
     public class AuthenticationAttribute : AuthorizationFilterAttribute
     {
         public override void OnAuthorization(HttpActionContext actionContext)
@@ -31,7 +32,7 @@ namespace PostsAPI
 
                 if (UserSecurity.Login(username, password))
                 {
-                    Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity(username), null);
+                    ApplicationPrincipal.SwitchCurrentPrincipal(() => new GenericPrincipal(new GenericIdentity(username), null));
                 } else
                 {
                     actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);

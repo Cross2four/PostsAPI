@@ -11,6 +11,7 @@ using System.Linq;
 using System.Web.Helpers;
 using System.Net.Http.Headers;
 using System.Net;
+using DataAccess;
 
 namespace PostsAPI.Tests.Controllers
 {
@@ -25,23 +26,26 @@ namespace PostsAPI.Tests.Controllers
         {
             // Arrange
             CommentsController controller = new CommentsController();
-            controller.Request = new HttpRequestMessage();
+            controller.Request = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/comments");
 
             controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
                 "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
                     string.Format("{0}:{1}", "user1", "password1"))));
 
+            var filter = new AuthenticationAttribute();
+            filter.OnAuthorization(controller.ActionContext);
+
             controller.Configuration = new HttpConfiguration();
 
             // Act
-            CommentRecieved comment = new CommentRecieved { Body = "Product1" };
+            CommentRecieved comment = new CommentRecieved() { Body = "Product1" };
             var response = controller.Post(comment);
 
             string responseBody = await response.Content.ReadAsStringAsync();
             var json = Json.Decode(responseBody);
 
             // Assert
-            Assert.AreEqual(json, comment);
+            Assert.AreEqual(json.Body, comment.Body);
         }
 
         [TestMethod]
@@ -52,8 +56,17 @@ namespace PostsAPI.Tests.Controllers
 
             controller.Request = new HttpRequestMessage
             {
-                RequestUri = new Uri("http://localhost/api/products")
+                RequestUri = new Uri("http://localhost/api/comments"),
+                Method = HttpMethod.Post
             };
+
+            controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", "user1", "password1"))));
+
+            var filter = new AuthenticationAttribute();
+            filter.OnAuthorization(controller.ActionContext);
+
             controller.Configuration = new HttpConfiguration();
             controller.Configuration.Routes.MapHttpRoute(
                 name: "DefaultApi",
@@ -62,7 +75,7 @@ namespace PostsAPI.Tests.Controllers
 
             controller.RequestContext.RouteData = new HttpRouteData(
                 route: new HttpRoute(),
-                values: new HttpRouteValueDictionary { { "controller", "posts" } });
+                values: new HttpRouteValueDictionary { { "controller", "comments" } });
 
             // Act
             CommentRecieved comment = new CommentRecieved() { Body = "Product1" };
@@ -72,7 +85,7 @@ namespace PostsAPI.Tests.Controllers
             var json = Json.Decode(responseBody);
 
             // Assert
-            Assert.AreEqual("http://localhost/api/products/42", response.Headers.Location.AbsoluteUri);
+            Assert.AreEqual("http://localhost/api/comments/" + json.Id, response.Headers.Location.AbsoluteUri);
         }
 
         [TestMethod]
@@ -80,63 +93,93 @@ namespace PostsAPI.Tests.Controllers
         {
             // Arrange
             CommentsController controller = new CommentsController();
-            controller.Request = new HttpRequestMessage();
+            controller.Request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Put
+            };
 
             controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
                 "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
                     string.Format("{0}:{1}", "user1", "password1"))));
 
+            var filter = new AuthenticationAttribute();
+            filter.OnAuthorization(controller.ActionContext);
+
             controller.Configuration = new HttpConfiguration();
 
             // Act
-            CommentRecieved comment = new CommentRecieved() { Body = "Product1" };
-            var response = controller.Put(3, comment);
+            using (DataModel entities = new DataModel())
+            {
+                var comments = entities.Comments.ToList();
 
-            string responseBody = await response.Content.ReadAsStringAsync();
-            var json = Json.Decode(responseBody);
+                CommentRecieved comment = new CommentRecieved() { Body = "Product1" };
+                var response = controller.Put(comments.Last().Id, comment);
 
-            // Assert
-            Assert.AreEqual(json, comment);
+                // Assert
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+                var json = Json.Decode(responseBody);
+
+                // Assert
+                Assert.AreEqual(json.Body, comment.Body);
+            }
         }
 
         [TestMethod]
         public void Delete()
         {
-            // Arrange
             CommentsController controller = new CommentsController();
-            controller.Request = new HttpRequestMessage();
+            controller.Request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Delete
+            };
 
             controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
                 "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
                     string.Format("{0}:{1}", "user1", "password1"))));
 
+            var filter = new AuthenticationAttribute();
+            filter.OnAuthorization(controller.ActionContext);
+
             controller.Configuration = new HttpConfiguration();
 
             // Act
-            var response = controller.Delete(3);
+            using (DataModel entities = new DataModel())
+            {
+                var comments = entities.Comments.ToList();
+                var response = controller.Delete(comments.Last().Id);
 
-            // Assert
-            Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
+                // Assert
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            }
         }
 
         [TestMethod]
         public void Delete_DoesntExist()
         {
-            // Arrange
             CommentsController controller = new CommentsController();
-            controller.Request = new HttpRequestMessage();
+            controller.Request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Delete
+            };
 
             controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
                 "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
                     string.Format("{0}:{1}", "user1", "password1"))));
 
+            var filter = new AuthenticationAttribute();
+            filter.OnAuthorization(controller.ActionContext);
+
             controller.Configuration = new HttpConfiguration();
 
             // Act
-            var response = controller.Delete(300);
+            var response = controller.Delete(1000);
 
             // Assert
-            Assert.AreEqual(response.StatusCode, HttpStatusCode.NotFound);
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }
