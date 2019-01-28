@@ -19,6 +19,7 @@ namespace DataAccess.Models
     public class CommentRecieved
     {
         public String Body { get; set; }
+        public object PostId { get; set; }
     }
 
     public class CommentReturned

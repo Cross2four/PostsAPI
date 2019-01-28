@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DataAccess;
+using DataAccess.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,31 +11,106 @@ namespace PostsAPI.Controllers
 {
     public class CommentsController : ApiController
     {
-        // GET api/values
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/values/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/values
-        public void Post([FromBody]string value)
+        public HttpResponseMessage Post([FromBody]CommentRecieved commentRecieved)
         {
+            try
+            {
+                using (DataModel entities = new DataModel())
+                {
+                    Comment commentEntity = new Comment();
+
+                    commentEntity.Body = commentRecieved.Body;
+                    commentEntity.CreatedAt = DateTime.Now;
+
+                    var user = DataAccess.Models.User.GetAuthedUser();
+
+                    if (user == null)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.Unauthorized);
+                    }
+
+                    var post = entities.Posts.FirstOrDefault(p => p.Id.Equals(commentRecieved.PostId));
+
+                    if (post == null)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound, $"Unable to update. Post with ID: { commentRecieved.PostId.ToString() }was not found");
+                    }
+
+                    commentEntity.User = user;
+                    commentEntity.Post = post;
+
+                    entities.Comments.Add(commentEntity);
+                    entities.SaveChanges();
+
+                    var message = Request.CreateResponse(HttpStatusCode.Created, (CommentReturned)commentEntity);
+                    message.Headers.Location = new Uri(Request.RequestUri + commentEntity.Id.ToString());
+
+                    return message;
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+
         }
 
         // PUT api/values/5
-        public void Put(int id, [FromBody]string value)
+        public HttpResponseMessage Put(int id, [FromBody]CommentRecieved comment)
         {
+            try
+            {
+                using (DataModel entities = new DataModel())
+                {
+                    var commentEntity = entities.Comments.FirstOrDefault(p => p.Id.Equals(id));
+
+                    if (commentEntity != null)
+                    {
+                        commentEntity.Body = comment.Body;
+
+                        entities.SaveChanges();
+
+                        return Request.CreateResponse(HttpStatusCode.OK, commentEntity);
+                    }
+                    else
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"Unable to update. Post with ID: {id.ToString()} was not found");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
         }
 
         // DELETE api/values/5
-        public void Delete(int id)
+        public HttpResponseMessage Delete(int id)
         {
+            try
+            {
+                using (DataModel entities = new DataModel())
+                {
+                    var comment = entities.Comments.FirstOrDefault(p => p.Id.Equals(id));
+
+                    if (comment != null)
+                    {
+                        entities.Comments.Remove(comment);
+                        entities.SaveChanges();
+
+                        return Request.CreateResponse(HttpStatusCode.OK);
+                    }
+                    else
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"Unable to delete. Comment with ID: {id.ToString()} was not found");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
         }
     }
 }

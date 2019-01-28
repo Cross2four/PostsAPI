@@ -87,7 +87,7 @@ namespace PostsAPI.Controllers
         }
 
         // PUT api/values/5
-        public HttpResponseMessage Put(int id, [FromBody]Post post)
+        public HttpResponseMessage Put(int id, [FromBody]PostRecieved post)
         {
             try
             {

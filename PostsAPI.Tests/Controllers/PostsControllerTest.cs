@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Web.Helpers;
 using System.Web.Http;
 using System.Web.Http.Routing;
 using DataAccess.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using PostsAPI.Controllers;
 
 namespace PostsAPI.Tests.Controllers
@@ -19,53 +21,89 @@ namespace PostsAPI.Tests.Controllers
         public void Get()
         {
             // Arrange
-            PostsController controller = new PostsController();
+            var controller = new PostsController();
+            controller.Request = new HttpRequestMessage();
+
+            controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", "user1", "password1"))));
+
+            controller.Configuration = new HttpConfiguration();
 
             // Act
-            IEnumerable<string> result = controller.Get();
+            var response = controller.Get();
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(2, result.Count());
-            Assert.AreEqual("value1", result.ElementAt(0));
-            Assert.AreEqual("value2", result.ElementAt(1));
+            List<PostReturned> posts;
+            Assert.IsTrue(response.TryGetContentValue<List<PostReturned>>(out posts));
+            Assert.AreEqual(8, posts.Count);
         }
 
         [TestMethod]
         public void GetById()
         {
             // Arrange
-            PostsController controller = new PostsController();
+            var controller = new PostsController();
+            controller.Request = new HttpRequestMessage();
+
+            controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", "user1", "password1"))));
+
+            controller.Configuration = new HttpConfiguration();
 
             // Act
-            string result = controller.Get(5);
+            var response = controller.Get(10);
 
             // Assert
-            Assert.AreEqual("value", result);
+            PostReturned post = new PostReturned { Id = 10 };
+            Assert.IsTrue(response.TryGetContentValue<PostReturned>(out post));
+            Assert.AreEqual(10, post.Id);
         }
 
         [TestMethod]
-        public void Post()
+        public async System.Threading.Tasks.Task PostAsync()
         {
             // Arrange
             PostsController controller = new PostsController();
+            controller.Request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post
+            };
+
+            controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", "user1", "password1"))));
+
+            controller.Configuration = new HttpConfiguration();
 
             // Act
-            controller.Post("value");
+            PostRecieved post = new PostRecieved() { Body = "Product1" };
+            var response = controller.Post(post);
+            
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var json = Json.Decode(responseBody);
 
             // Assert
+            Assert.AreEqual(json, post);
         }
 
         [TestMethod]
-        public void PostSetsLocationHeader()
+        public async System.Threading.Tasks.Task PostSetsLocationHeaderAsync()
         {
             // Arrange
             PostsController controller = new PostsController();
 
             controller.Request = new HttpRequestMessage
             {
-                RequestUri = new Uri("http://localhost/api/products")
+                RequestUri = new Uri("http://localhost/api/products"),
+                Method = HttpMethod.Post
             };
+
+            controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", "user1", "password1"))));
+
             controller.Configuration = new HttpConfiguration();
             controller.Configuration.Routes.MapHttpRoute(
                 name: "DefaultApi",
@@ -77,35 +115,89 @@ namespace PostsAPI.Tests.Controllers
                 values: new HttpRouteValueDictionary { { "controller", "posts" } });
 
             // Act
-            Post post = new Post() { Id = 42, Body = "Product1" };
+            PostRecieved post = new PostRecieved() { Body = "Product1" };
             var response = controller.Post(post);
 
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var json = Json.Decode(responseBody);
+
             // Assert
-            Assert.AreEqual("http://localhost/api/products/42", response.Headers.Location.AbsoluteUri);
+            Assert.AreEqual("http://localhost/api/products/", response.Headers.Location.AbsoluteUri);
         }
 
         [TestMethod]
-        public void Put()
+        public async System.Threading.Tasks.Task PutAsync()
         {
             // Arrange
             PostsController controller = new PostsController();
+            controller.Request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Put
+            };
+
+            controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", "user1", "password1"))));
+
+            controller.Configuration = new HttpConfiguration();
 
             // Act
-            controller.Put(5, "value");
+            PostRecieved post = new PostRecieved() { Body = "Product1" };
+            var response = controller.Put(3, post);
+
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var json = Json.Decode(responseBody);
 
             // Assert
+            Assert.AreEqual(json, post);
         }
 
         [TestMethod]
         public void Delete()
         {
-            // Arrange
             PostsController controller = new PostsController();
+            controller.Request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Delete
+            };
+
+            controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", "user1", "password1"))));
+
+
+            controller.Configuration = new HttpConfiguration();
 
             // Act
-            controller.Delete(5);
+
+            var response = controller.Delete(3);
+            
+            // Assert
+            Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
+        }
+
+        [TestMethod]
+        public void Delete_DoesntExist()
+        {
+            PostsController controller = new PostsController();
+            controller.Request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Delete
+            };
+
+            controller.Request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", "user1", "password1"))));
+
+
+            controller.Configuration = new HttpConfiguration();
+
+            // Act
+
+            var response = controller.Delete(100);
 
             // Assert
+            Assert.AreEqual(response.StatusCode, HttpStatusCode.NotFound);
         }
     }
 }
