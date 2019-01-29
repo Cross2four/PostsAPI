@@ -114,7 +114,7 @@ namespace PostsAPI.Tests.Controllers
             controller.Configuration = new HttpConfiguration();
 
             // Act
-            PostRecieved post = new PostRecieved() { Body = "Product1" };
+            PostRecieved post = new PostRecieved() { Body = "Post" };
             var response = controller.Post(post);
             
             string responseBody = await response.Content.ReadAsStringAsync();
@@ -154,7 +154,7 @@ namespace PostsAPI.Tests.Controllers
                 values: new HttpRouteValueDictionary { { "controller", "posts" } });
 
             // Act
-            PostRecieved post = new PostRecieved() { Body = "Product1" };
+            PostRecieved post = new PostRecieved() { Body = "Post" };
             var response = controller.Post(post);
 
             string responseBody = await response.Content.ReadAsStringAsync();
@@ -188,7 +188,7 @@ namespace PostsAPI.Tests.Controllers
             {
                 var posts = entities.Posts.ToList();
 
-                PostRecieved post = new PostRecieved() { Body = "Product1" };
+                PostRecieved post = new PostRecieved() { Body = "Post" };
                 var response = controller.Put(posts.Last().Id, post);
 
                 // Assert

@@ -57,6 +57,10 @@
     <Compile Include="Migrations\201901290659492_Initial.Designer.cs">
       <DependentUpon>201901290659492_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901290731054_AppUserUniqueUsername.cs" />
+    <Compile Include="Migrations\201901290731054_AppUserUniqueUsername.Designer.cs">
+      <DependentUpon>201901290731054_AppUserUniqueUsername.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Post.cs" />
@@ -85,6 +89,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201901290659492_Initial.resx">
       <DependentUpon>201901290659492_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901290731054_AppUserUniqueUsername.resx">
+      <DependentUpon>201901290731054_AppUserUniqueUsername.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -70,7 +70,7 @@ namespace PostsAPI.Controllers
                         return Request.CreateResponse(HttpStatusCode.Unauthorized);
                     }
 
-                    postEntity.User = user;
+                    postEntity.User = entities.Users.FirstOrDefault(u => u.Id == user.Id);
 
                     entities.Posts.Add(postEntity);
                     entities.SaveChanges();

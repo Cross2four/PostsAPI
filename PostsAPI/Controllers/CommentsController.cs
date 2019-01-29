@@ -37,7 +37,7 @@ namespace PostsAPI.Controllers
                         return Request.CreateResponse(HttpStatusCode.NotFound, $"Unable to update. Post with ID: { commentRecieved.PostId.ToString() }was not found");
                     }
 
-                    commentEntity.User = user;
+                    commentEntity.User = entities.Users.FirstOrDefault(u => u.Id == user.Id);
                     commentEntity.Post = post;
 
                     entities.Comments.Add(commentEntity);
