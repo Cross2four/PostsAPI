@@ -16,8 +16,8 @@ namespace DataAccess.Migrations
         protected override void Seed(DataAccess.DataModel context)
         {
             context.Users.AddOrUpdate(x => x.Id,
-                new User() { Id = 1, Name = "User 1", UserName = "user1", Password = PasswordHasher.Hash("password1") },
-                new User() { Id = 2, Name = "User 2", UserName = "user2", Password = PasswordHasher.Hash("password2") }
+                new AppUser() { Id = 1, Name = "User 1", UserName = "user1", Password = PasswordHasher.Hash("password1") },
+                new AppUser() { Id = 2, Name = "User 2", UserName = "user2", Password = PasswordHasher.Hash("password2") }
             );
 
             context.Posts.AddOrUpdate(x => x.Id,

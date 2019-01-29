@@ -23,14 +23,14 @@ namespace PostsAPI.Controllers
                     commentEntity.Body = commentRecieved.Body;
                     commentEntity.CreatedAt = DateTime.Now;
 
-                    var user = DataAccess.Models.User.GetAuthedUser();
+                    AppUser user = AppUser.AuthedUser;
 
                     if (user == null)
                     {
                         return Request.CreateResponse(HttpStatusCode.Unauthorized);
                     }
 
-                    var post = entities.Posts.FirstOrDefault(p => p.Id.Equals(commentRecieved.PostId));
+                    Post post = entities.Posts.FirstOrDefault(p => p.Id == commentRecieved.PostId);
 
                     if (post == null)
                     {
@@ -44,7 +44,7 @@ namespace PostsAPI.Controllers
                     entities.SaveChanges();
 
                     var message = Request.CreateResponse(HttpStatusCode.Created, (CommentReturned)commentEntity);
-                    message.Headers.Location = new Uri(Request.RequestUri + commentEntity.Id.ToString());
+                    message.Headers.Location = new Uri(Request.RequestUri.OriginalString.Replace("comments", "posts") + "/" + commentEntity.Post.Id.ToString());
 
                     return message;
                 }
@@ -63,7 +63,7 @@ namespace PostsAPI.Controllers
             {
                 using (DataModel entities = new DataModel())
                 {
-                    var commentEntity = entities.Comments.FirstOrDefault(p => p.Id.Equals(id));
+                    var commentEntity = entities.Comments.FirstOrDefault(p => p.Id == id);
 
                     if (commentEntity != null)
                     {
@@ -92,7 +92,7 @@ namespace PostsAPI.Controllers
             {
                 using (DataModel entities = new DataModel())
                 {
-                    var comment = entities.Comments.FirstOrDefault(p => p.Id.Equals(id));
+                    var comment = entities.Comments.FirstOrDefault(p => p.Id == id);
 
                     if (comment != null)
                     {

@@ -11,7 +11,7 @@ namespace DataAccess.Models
         public int Id { get; set; }
         public string Body { get; set; }
 
-        public User User { get; set; }
+        public AppUser User { get; set; }
         
         public ICollection<Comment> Comments { get; set; }
 

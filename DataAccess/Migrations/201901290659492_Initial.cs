@@ -19,7 +19,7 @@ namespace DataAccess.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Posts", t => t.Post_Id)
-                .ForeignKey("dbo.Users", t => t.User_Id)
+                .ForeignKey("dbo.AppUsers", t => t.User_Id)
                 .Index(t => t.Post_Id)
                 .Index(t => t.User_Id);
             
@@ -33,11 +33,11 @@ namespace DataAccess.Migrations
                         User_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Users", t => t.User_Id)
+                .ForeignKey("dbo.AppUsers", t => t.User_Id)
                 .Index(t => t.User_Id);
             
             CreateTable(
-                "dbo.Users",
+                "dbo.AppUsers",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -51,13 +51,13 @@ namespace DataAccess.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.Posts", "User_Id", "dbo.Users");
-            DropForeignKey("dbo.Comments", "User_Id", "dbo.Users");
+            DropForeignKey("dbo.Posts", "User_Id", "dbo.AppUsers");
+            DropForeignKey("dbo.Comments", "User_Id", "dbo.AppUsers");
             DropForeignKey("dbo.Comments", "Post_Id", "dbo.Posts");
             DropIndex("dbo.Posts", new[] { "User_Id" });
             DropIndex("dbo.Comments", new[] { "User_Id" });
             DropIndex("dbo.Comments", new[] { "Post_Id" });
-            DropTable("dbo.Users");
+            DropTable("dbo.AppUsers");
             DropTable("dbo.Posts");
             DropTable("dbo.Comments");
         }

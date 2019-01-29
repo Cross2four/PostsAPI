@@ -3,12 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
-    using System.Threading;
     using ApplicationPrincipal;
 
-    public class User
+    public class AppUser
     {
         [Key]
         public int Id { get; set; }
@@ -19,19 +17,22 @@
         public ICollection<Post> Posts { get; set; }
         public ICollection<Comment> Comments { get; set; }
 
-        public static User GetAuthedUser()
+        public static AppUser AuthedUser
         {
-            using (DataModel entities = new DataModel())
+            get
             {
-                var name = ApplicationPrincipal.Current.Identity.Name;
-                var user = entities.Users.FirstOrDefault(u => u.UserName.Equals(name));
-
-                if (user == null)
+                using (DataModel entities = new DataModel())
                 {
-                    throw new Exception("Loged in User not found");
-                }
+                    var name = ApplicationPrincipal.Current.Identity.Name;
+                    var user = entities.Users.FirstOrDefault(u => u.UserName.Equals(name));
 
-                return user;
+                    if (user == null)
+                    {
+                        throw new Exception("Loged in User not found");
+                    }
+
+                    return user;
+                }
             }
         }
     }

@@ -11,7 +11,7 @@ namespace DataAccess.Models
         public string Body { get; set; }
         
         public Post Post { get; set; }
-        public User User { get; set; }
+        public AppUser User { get; set; }
 
         public DateTime CreatedAt { get; set; }
     }
@@ -19,7 +19,7 @@ namespace DataAccess.Models
     public class CommentRecieved
     {
         public String Body { get; set; }
-        public object PostId { get; set; }
+        public int PostId { get; set; }
     }
 
     public class CommentReturned

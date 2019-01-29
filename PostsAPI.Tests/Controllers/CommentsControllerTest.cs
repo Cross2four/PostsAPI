@@ -38,7 +38,7 @@ namespace PostsAPI.Tests.Controllers
             controller.Configuration = new HttpConfiguration();
 
             // Act
-            CommentRecieved comment = new CommentRecieved() { Body = "Product1" };
+            CommentRecieved comment = new CommentRecieved() { Body = "Comment", PostId = 1 };
             var response = controller.Post(comment);
 
             string responseBody = await response.Content.ReadAsStringAsync();
@@ -78,14 +78,14 @@ namespace PostsAPI.Tests.Controllers
                 values: new HttpRouteValueDictionary { { "controller", "comments" } });
 
             // Act
-            CommentRecieved comment = new CommentRecieved() { Body = "Product1" };
+            CommentRecieved comment = new CommentRecieved() { Body = "Comment", PostId = 1 };
             var response = controller.Post(comment);
 
             string responseBody = await response.Content.ReadAsStringAsync();
             var json = Json.Decode(responseBody);
 
             // Assert
-            Assert.AreEqual("http://localhost/api/comments/" + json.Id, response.Headers.Location.AbsoluteUri);
+            Assert.AreEqual("http://localhost/api/posts/" + json.PostId, response.Headers.Location.AbsoluteUri);
         }
 
         [TestMethod]
@@ -110,14 +110,12 @@ namespace PostsAPI.Tests.Controllers
             // Act
             using (DataModel entities = new DataModel())
             {
-                var comments = entities.Comments.ToList();
+                var lastComment = entities.Comments.ToList().Last();
 
-                CommentRecieved comment = new CommentRecieved() { Body = "Product1" };
-                var response = controller.Put(comments.Last().Id, comment);
+                CommentRecieved comment = new CommentRecieved() { Body = "Comment" };
+                var response = controller.Put(lastComment.Id, comment);
 
                 // Assert
-                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -149,8 +147,8 @@ namespace PostsAPI.Tests.Controllers
             // Act
             using (DataModel entities = new DataModel())
             {
-                var comments = entities.Comments.ToList();
-                var response = controller.Delete(comments.Last().Id);
+                var lastComment = entities.Comments.ToList().Last();
+                var response = controller.Delete(lastComment.Id);
 
                 // Assert
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);

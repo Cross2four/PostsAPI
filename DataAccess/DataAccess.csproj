@@ -53,14 +53,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataModel.cs" />
-    <Compile Include="Migrations\201901281822552_Initial.cs" />
-    <Compile Include="Migrations\201901281822552_Initial.Designer.cs">
-      <DependentUpon>201901281822552_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201901290659492_Initial.cs" />
+    <Compile Include="Migrations\201901290659492_Initial.Designer.cs">
+      <DependentUpon>201901290659492_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Post.cs" />
-    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\AppUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -83,8 +83,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201901281822552_Initial.resx">
-      <DependentUpon>201901281822552_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201901290659492_Initial.resx">
+      <DependentUpon>201901290659492_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

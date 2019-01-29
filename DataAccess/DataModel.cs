@@ -1,9 +1,7 @@
 namespace DataAccess
 {
     using DataAccess.Models;
-    using System;
     using System.Data.Entity;
-    using System.Linq;
 
     public class DataModel : DbContext
     {
@@ -18,7 +16,7 @@ namespace DataAccess
         {
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<AppUser> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
     }

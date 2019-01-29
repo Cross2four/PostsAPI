@@ -63,7 +63,7 @@ namespace PostsAPI.Controllers
                     postEntity.Body = postRecieved.Body;
                     postEntity.CreatedAt = DateTime.Now;
 
-                    var user = DataAccess.Models.User.GetAuthedUser();
+                    var user = DataAccess.Models.AppUser.AuthedUser;
 
                     if (user == null)
                     {
@@ -122,7 +122,7 @@ namespace PostsAPI.Controllers
             {
                 using (DataModel entities = new DataModel())
                 {
-                    var post = entities.Posts.FirstOrDefault(p => p.Id.Equals(id));
+                    var post = entities.Posts.FirstOrDefault(p => p.Id == id);
 
                     if (post != null)
                     {
