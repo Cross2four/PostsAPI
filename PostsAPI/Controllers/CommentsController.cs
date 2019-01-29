@@ -43,7 +43,7 @@ namespace PostsAPI.Controllers
                     entities.Comments.Add(commentEntity);
                     entities.SaveChanges();
 
-                    var message = Request.CreateResponse(HttpStatusCode.Created, (CommentReturned)commentEntity);
+                    var message = Request.CreateResponse(HttpStatusCode.Created, (CommentDTODetail)commentEntity);
                     message.Headers.Location = new Uri(Request.RequestUri.OriginalString.Replace("comments", "posts") + "/" + commentEntity.Post.Id.ToString());
 
                     return message;

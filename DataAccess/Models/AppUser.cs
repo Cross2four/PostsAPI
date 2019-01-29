@@ -40,4 +40,20 @@
             }
         }
     }
+
+    public class AppUserDTO
+    {
+        public int Id { get; set; }
+        public String Name { get; set; }
+
+        public static explicit operator AppUserDTO(AppUser v)
+        {
+            AppUserDTO userDTO = new AppUserDTO();
+
+            userDTO.Id = v.Id;
+            userDTO.Name = v.Name;
+
+            return userDTO;
+        }
+    }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace DataAccess.Models
 {
@@ -23,23 +23,49 @@ namespace DataAccess.Models
         public String Body { get; set; }
     }
 
-    public class PostReturned
+    public class PostDTOListItem
     {
         public int Id { get; set; }
         public String Body { get; set; }
 
-        public int UserId { get; set; }
+        public AppUserDTO User { get; set; }
+
+        public int CommentCount { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class PostDTODetail
+    {
+        public int Id { get; set; }
+        public String Body { get; set; }
+
+        public AppUserDTO User { get; set; }
+
+        public List<CommentDTOListItem> Comments { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
-        public static explicit operator PostReturned(Post v)
+        public static explicit operator PostDTODetail(Post p)
         {
-            PostReturned postReturned = new PostReturned();
+            PostDTODetail postReturned = new PostDTODetail();
 
-            postReturned.Id = v.Id;
-            postReturned.Body = v.Body;
-            postReturned.UserId = v.User.Id;
-            postReturned.CreatedAt = v.CreatedAt;
+            postReturned.Id = p.Id;
+            postReturned.Body = p.Body;
+            postReturned.User = (AppUserDTO)p.User;
+
+            List<CommentDTOListItem> commentDTOs = new List<CommentDTOListItem>();
+
+            if (p.Comments != null)
+            {
+                foreach (Comment c in p.Comments.ToList())
+                {
+                    commentDTOs.Add((CommentDTOListItem)c);
+                }
+            }
+
+            postReturned.Comments = commentDTOs;
+            postReturned.CreatedAt = p.CreatedAt;
 
             return postReturned;
         }

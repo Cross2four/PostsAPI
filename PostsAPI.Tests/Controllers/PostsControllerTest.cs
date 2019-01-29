@@ -36,8 +36,8 @@ namespace PostsAPI.Tests.Controllers
             var response = controller.Get();
 
             // Assert
-            List<PostReturned> posts;
-            Assert.IsTrue(response.TryGetContentValue<List<PostReturned>>(out posts));
+            List<PostDTOListItem> posts;
+            Assert.IsTrue(response.TryGetContentValue<List<PostDTOListItem>>(out posts));
 
             using (DataModel entities = new DataModel())
             {
@@ -66,8 +66,8 @@ namespace PostsAPI.Tests.Controllers
                 var response = controller.Get(lastPost.Id);
 
                 // Assert
-                PostReturned post = new PostReturned();
-                Assert.IsTrue(response.TryGetContentValue<PostReturned>(out post));
+                PostDTODetail post = new PostDTODetail();
+                Assert.IsTrue(response.TryGetContentValue<PostDTODetail>(out post));
 
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var json = Json.Decode(responseBody);
@@ -93,7 +93,7 @@ namespace PostsAPI.Tests.Controllers
             var response = controller.Get(10);
 
             // Assert
-            PostReturned post = new PostReturned { Id = 10 };
+            PostDTODetail post = new PostDTODetail { Id = 100 };
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
 

@@ -17,16 +17,41 @@ namespace PostsAPI.Controllers
         {
             using (DataModel entities = new DataModel())
             {
-                IEnumerable<PostReturned> list;
+                IEnumerable<PostDTOListItem> list;
 
                 List<string> terms = search.Split(' ').ToList();
 
                 if (!search.Equals(""))
                 {
-                    list = entities.Posts.Include("User").Where(p => terms.All(t => p.Body.Contains(t))).Select(s => new PostReturned { Id = s.Id, Body = s.Body, UserId = s.User.Id, CreatedAt = s.CreatedAt }).ToList();
+                    list = entities.Posts.Include("User").Where(
+                        p => terms.All(
+                            t => p.Body.Contains(t)
+                        )
+                    ).Select(
+                        s => new PostDTOListItem {
+                            Id = s.Id,
+                            Body = s.Body,
+                            User = new AppUserDTO {
+                                Id = s.User.Id,
+                                Name = s.User.Name
+                            },
+                            CommentCount = s.Comments.Count,
+                            CreatedAt = s.CreatedAt
+                        }
+                    ).ToList();
                 } else
                 {
-                    list = entities.Posts.Select(s => new PostReturned { Id = s.Id, Body = s.Body, UserId = s.User.Id, CreatedAt = s.CreatedAt }).ToList();
+                    list = entities.Posts.Select(
+                        s => new PostDTOListItem
+                        {
+                            Id = s.Id, Body = s.Body,
+                            User = new AppUserDTO {
+                                Id = s.User.Id,
+                                Name = s.User.Name
+                            },
+                            CommentCount = s.Comments.Count,
+                            CreatedAt = s.CreatedAt
+                        }).ToList();
                 }
 
                 return Request.CreateResponse(HttpStatusCode.OK, list);
@@ -39,11 +64,11 @@ namespace PostsAPI.Controllers
 
             using (DataModel entities = new DataModel())
             {
-                var post = entities.Posts.Include("User").Include("Comments").FirstOrDefault(e => e.Id.Equals(id));
+                var post = entities.Posts.Include("User").Include("Comments.User").FirstOrDefault(e => e.Id.Equals(id));
 
                 if (post != null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, (PostReturned)post);
+                    return Request.CreateResponse(HttpStatusCode.OK, (PostDTODetail)post);
                 } else
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"Post with ID: {id.ToString()} was not found");
@@ -75,7 +100,7 @@ namespace PostsAPI.Controllers
                     entities.Posts.Add(postEntity);
                     entities.SaveChanges();
 
-                    var message = Request.CreateResponse(HttpStatusCode.Created, (PostReturned)postEntity);
+                    var message = Request.CreateResponse(HttpStatusCode.Created, (PostDTODetail)postEntity);
                     message.Headers.Location = new Uri(Request.RequestUri + "/" + postEntity.Id.ToString());
 
                     return message;

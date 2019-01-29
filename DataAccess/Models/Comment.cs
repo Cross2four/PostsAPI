@@ -22,27 +22,48 @@ namespace DataAccess.Models
         public int PostId { get; set; }
     }
 
-    public class CommentReturned
+    public class CommentDTOListItem
+    {
+        public int Id { get; set; }
+        public string Body { get; set; }
+
+        public AppUserDTO User { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public static explicit operator CommentDTOListItem(Comment c)
+        {
+            CommentDTOListItem commentReturned = new CommentDTOListItem();
+
+            commentReturned.Id = c.Id;
+            commentReturned.Body = c.Body;
+            commentReturned.User = (AppUserDTO)c.User;
+            commentReturned.CreatedAt = c.CreatedAt;
+            
+            return commentReturned;
+        }
+    }
+
+    public class CommentDTODetail
     {
         public int Id { get; set; }
         public string Body { get; set; }
 
         public int PostId { get; set; }
-
-        public int UserId { get; set; }
+        public AppUserDTO User { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
-        public static explicit operator CommentReturned(Comment v)
+        public static explicit operator CommentDTODetail(Comment c)
         {
-            CommentReturned commentReturned = new CommentReturned();
+            CommentDTODetail commentReturned = new CommentDTODetail();
 
-            commentReturned.Id = v.Id;
-            commentReturned.Body = v.Body;
-            commentReturned.PostId = v.Post.Id;
-            commentReturned.UserId = v.User.Id;
-            commentReturned.CreatedAt = v.CreatedAt;
-            
+            commentReturned.Id = c.Id;
+            commentReturned.Body = c.Body;
+            commentReturned.PostId = c.Post.Id;
+            commentReturned.User = (AppUserDTO)c.User;
+            commentReturned.CreatedAt = c.CreatedAt;
+
             return commentReturned;
         }
     }
